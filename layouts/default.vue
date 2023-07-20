@@ -4,9 +4,9 @@
       <img src="@/assets/img/logo.svg" width="50" class="m-auto" />
     </div>
     <div class="flex-[.2_1_0%] w-full px-5">
-      <h1 class="text-3xl text-center font-light text-amber-600 drop-shadow-xl">
+      <h2 class="text-5xl text-left font-thin text-amber-600">
         Todofy
-      </h1>
+      </h2>
     </div>
     <div class="flex-[.6_1_0%] w-full">
       <div class="px-4">
