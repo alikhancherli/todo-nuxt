@@ -3,16 +3,17 @@ import { AccessToken, Todo } from '@/types/types';
 import ApiFetch from '../services/fetchApi';
 import Swal from 'sweetalert2';
 
+
+
 export const useTodoStore = defineStore('todos', {
     state: () => ({
-        todos: [] as Todo[],
-        loading: false
+        todos: [] as Todo[]
     }),
     actions: {
         async getTodos() {
-            this.loading = true;
+            const { apiBaseUrl } = useRuntimeConfig().public;
             const apiFetch = new ApiFetch<Todo[]>('/all?userId=2', {
-                baseUrl: 'https://localhost:7112/',
+                baseUrl: apiBaseUrl,
                 headers: {}
             });
 
@@ -26,11 +27,10 @@ export const useTodoStore = defineStore('todos', {
                     html: `<p>Something went wrong!</p> <br/> <strong>We got [${err.message}] issue.</strong>`,
                     footer: '<a href="">Report the issue?</a>'
                 })
-            }).finally(() => { this.loading = false; });
+            });
 
         },
         async postLogin(username: string, password: string) {
-            this.loading = true;
             const { userAccessTokenKey, apiBaseUrl } = useRuntimeConfig().public;
             const form = new FormData();
             form.append('Username', username);
@@ -55,7 +55,7 @@ export const useTodoStore = defineStore('todos', {
                     html: `<p>Something went wrong!</p> <br/> <strong class="text-gray-500">We got [${err.message}] issue.</strong>`,
                     footer: '<a href="#">Report the issue?</a>'
                 })
-            }).finally(() => { this.loading = false; });
+            });
         }
     }
 })

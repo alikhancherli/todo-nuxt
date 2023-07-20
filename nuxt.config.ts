@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   runtimeConfig:{
     public:{
       userAccessTokenKey : 'token',
-      apiBaseUrl :'https://localhost:7112/api/'
+      apiBaseUrl :'http://localhost:5125/'
     }
   },
   dirs: [

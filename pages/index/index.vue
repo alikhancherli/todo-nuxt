@@ -1,5 +1,5 @@
 <template>
-  <div v-if="store.loading">
+  <div v-if="loading">
     <Icon name="line-md:loading-loop" class="text-amber-500" />
   </div>
   <section class="grid grid-cols-4 gap-4">
@@ -10,8 +10,17 @@
 <script lang="ts" setup>
 import { useTodoStore } from '@/stores/todoStore';
 const store = useTodoStore();
+const loading = ref(false);
 
-store.getTodos();
+const getTodoList = () => {
+  loading.value = true;
+  store.getTodos().finally(() => { loading.value = false; });
+}
+
+onMounted(() => {
+  getTodoList();
+})
+
 
 useSeoMeta({
   title: "Todofy | Home"

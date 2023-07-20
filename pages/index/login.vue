@@ -11,8 +11,8 @@
     </div>
 
     <div class="flex-initial w-[50%] mx-auto">
-      <button :disabled="store.loading" @click="login()" class="bg-lime-600 px-4 py-2 text-white rounded-xl mx-auto w-full font-light text-xl">
-        <span v-if="!store.loading">Sign in</span>
+      <button :disabled="loading" @click="login()" class="bg-lime-600 px-4 py-2 text-white rounded-xl mx-auto w-full font-light text-xl">
+        <span v-if="!loading">Sign in</span>
         <span v-else>Proccesing <Icon name="line-md:loading-loop" class="text-white" /></span>
       </button>
     </div>
@@ -23,11 +23,13 @@
 import { useTodoStore } from '@/stores/todoStore';
 
 const store = useTodoStore();
+const loading = ref(false);
 
 const username = ref('');
 const password = ref('');
 
 const login = async ()=>{
-  await store.postLogin(username.value,password.value);
+  loading.value = true;
+  await store.postLogin(username.value,password.value).finally(()=>{loading.value=false;});
 }
 </script>
