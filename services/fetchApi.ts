@@ -36,7 +36,7 @@ export default class ApiFetch<T> {
     }
 
     async post(): Promise<ApiResponse<T>> {
-        const { data, status, statusText } = await axios.post(this._url,this._options.body, {
+        const { data, status, statusText } = await axios.post(this._url, this._options.body, {
             baseURL: this._options.baseUrl,
             headers: this._options.headers
         });

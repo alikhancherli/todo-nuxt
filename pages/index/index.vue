@@ -1,5 +1,5 @@
 <template>
-  <div v-if="store.todos.length <= 0">
+  <div v-if="store.loading">
     <Icon name="line-md:loading-loop" class="text-amber-500" />
   </div>
   <section class="grid grid-cols-4 gap-4">

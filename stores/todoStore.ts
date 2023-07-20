@@ -1,23 +1,37 @@
 import { defineStore } from 'pinia';
 import { AccessToken, Todo } from '@/types/types';
 import ApiFetch from '../services/fetchApi';
+import Swal from 'sweetalert2';
 
 export const useTodoStore = defineStore('todos', {
     state: () => ({
-        todos: [] as Todo[]
+        todos: [] as Todo[],
+        loading: false
     }),
     actions: {
         async getTodos() {
+            this.loading = true;
             const apiFetch = new ApiFetch<Todo[]>('/all?userId=2', {
                 baseUrl: 'https://localhost:7112/',
                 headers: {}
             });
 
-            const { data, message } = await apiFetch.send();
-            this.todos = data || [];
+            await apiFetch.send().then((data) => {
+                console.log(data)
+                this.todos = data.data || [];
+            }).catch(err => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    html: `<p>Something went wrong!</p> <br/> <strong>We got [${err.message}] issue.</strong>`,
+                    footer: '<a href="">Report the issue?</a>'
+                })
+            }).finally(() => { this.loading = false; });
+
         },
         async postLogin(username: string, password: string) {
-            const {userAccessTokenKey,apiBaseUrl} = useRuntimeConfig().public;
+            this.loading = true;
+            const { userAccessTokenKey, apiBaseUrl } = useRuntimeConfig().public;
             const form = new FormData();
             form.append('Username', username);
             form.append('Password', password);
@@ -30,10 +44,18 @@ export const useTodoStore = defineStore('todos', {
                 body: form
             });
 
-            const {data} = await apiFetch.post();
-            localStorage.setItem(userAccessTokenKey,JSON.stringify(data));
-            const router = useRouter();
-            router.push('/')
+            await apiFetch.post().then(data => {
+                localStorage.setItem(userAccessTokenKey, JSON.stringify(data.data));
+                const router = useRouter();
+                router.push('/')
+            }).catch(err => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    html: `<p>Something went wrong!</p> <br/> <strong class="text-gray-500">We got [${err.message}] issue.</strong>`,
+                    footer: '<a href="#">Report the issue?</a>'
+                })
+            }).finally(() => { this.loading = false; });
         }
     }
 })

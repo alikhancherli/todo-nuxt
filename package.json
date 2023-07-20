@@ -18,7 +18,8 @@
   "dependencies": {
     "@pinia/nuxt": "^0.4.11",
     "axios": "^1.4.0",
-    "pinia": "^2.1.4"
+    "pinia": "^2.1.4",
+    "sweetalert2": "^11.7.18"
   },
   "overrides": {
     "vue": "latest"
