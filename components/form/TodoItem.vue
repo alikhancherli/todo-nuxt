@@ -6,7 +6,7 @@
 
     <FormKit key="i-priority" value="1" id="priority" type="number" label="Priority" validation="required|min:1"/>
 
-    <FormKit type="datetime-local" label="Reminder" validation="required|date_after"
+    <FormKit type="datetime-local" id="reminder" label="Reminder" validation="required|date_after"
       validation-visibility="live" />
   </section>
 </template>
