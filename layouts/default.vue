@@ -17,12 +17,12 @@
 
     <div class="flex-[.1_1_0%] w-full">
       <div class="px-4">
-        <button v-if="!isSignedIn" @click="useRouter().push('/login')"
+        <button v-if="!store.loggedInUser" @click="useRouter().push('/login')"
           class="rounded-lg border-2 border-gray-200 p-3 hover:bg-amber-500">
           <Icon name="ion:person" />
         </button>
 
-        <button v-if="isSignedIn" @click="signOut()"
+        <button v-else @click="logOut()"
           class="rounded-lg border-2 border-gray-200 p-3 hover:bg-amber-500">
           <Icon name="ion:exit" />
         </button>
@@ -33,10 +33,10 @@
   <main class="flex">
 
     <div class="flex-0 pt-12 px-5">
-      <button class="flex rounded-lg px-12 py-4 my-4 bg-lime-600 text-white">
+      <NuxtLink to="/todo/add" class="flex rounded-lg px-12 py-4 my-4 bg-lime-600 text-white">
         <Icon name="ion:plus" />
         <span class="text-xl ml-6">Add an item</span>
-      </button>
+      </NuxtLink>
 
       <NuxtLink to="/" class="flex rounded-lg px-12 py-4 my-4">
         <Icon name="iconoir:home" color="black" />
@@ -60,6 +60,27 @@
   </main>
 </template>
 
-<script setup>
+<script lang="ts" setup>
+import { useTodoStore } from '@/stores/todoStore';
+import Swal from 'sweetalert2'
+
+const store = useTodoStore();
+
 const { isSignedIn, signOut } = useAuth();
+const logOut = () => {
+  Swal.fire({
+    icon: 'question',
+    title: 'Are you sure to logging out?',
+    confirmButtonText: 'Yes',
+    cancelButtonText: 'No',
+    showDenyButton: true
+  }).then((result) => {
+    if (result.isConfirmed) {
+      signOut()
+      const router = useRouter();
+      router.replace('/login');
+    }
+
+  })
+}
 </script>

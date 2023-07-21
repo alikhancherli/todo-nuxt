@@ -1,6 +1,9 @@
+
+const FormKitVariants = require('@formkit/themes/tailwindcss')
+
 {
     theme: {},
-    plugins: [],
+    plugins: [FormKitVariants],
     content: [
       `${srcDir}/components/**/*.{vue,js,ts}`,
       `${srcDir}/layouts/**/*.vue`,
@@ -12,6 +15,7 @@
       `${srcDir}/app.{js,ts,vue}`,
       `${srcDir}/Error.{js,ts,vue}`,
       `${srcDir}/error.{js,ts,vue}`,
-      `${srcDir}/app.config.{js,ts}`
+      `${srcDir}/app.config.{js,ts}`,
+      './tailwind-theme.js'
     ]
   }  

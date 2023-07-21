@@ -11,11 +11,21 @@
     </div>
 
     <div class="flex-initial w-[50%] mx-auto">
-      <button :disabled="loading" @click="login()" class="bg-lime-600 px-4 py-2 text-white rounded-xl mx-auto w-full font-light text-xl">
+      <button :disabled="loading" @click="login()"
+        class="bg-lime-600 px-4 py-2 text-white rounded-xl mx-auto hover:bg-lime-500 w-full font-light text-xl duration-200 transition-all">
         <span v-if="!loading">Sign in</span>
-        <span v-else>Proccesing <Icon name="line-md:loading-loop" class="text-white" /></span>
+        <span v-else>Proccesing
+          <Icon name="line-md:loading-loop" class="text-white" />
+        </span>
       </button>
     </div>
+
+    <div class="flex-initial w-[50%] mx-auto mt-3">
+      <NuxtLink to="/register" class="text-md text-white py-2 px-4 block text-center font-light text-xl bg-amber-600 hover:bg-amber-500 duration-200 transition-all rounded-xl">
+        Sign up
+      </NuxtLink>
+    </div>
+
   </div>
 </template>
 
@@ -28,8 +38,8 @@ const loading = ref(false);
 const username = ref('');
 const password = ref('');
 
-const login = async ()=>{
+const login = async () => {
   loading.value = true;
-  await store.postLogin(username.value,password.value).finally(()=>{loading.value=false;});
+  await store.postLogin(username.value, password.value).finally(() => { loading.value = false; });
 }
 </script>

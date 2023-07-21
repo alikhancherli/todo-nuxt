@@ -1,33 +1,48 @@
 import { defineStore } from 'pinia';
-import { AccessToken, Todo } from '@/types/types';
+import { AccessToken, Todo, TodoItem } from '@/types/types';
 import ApiFetch from '../services/fetchApi';
 import Swal from 'sweetalert2';
-
+import { AxiosResponse } from 'axios';
 
 
 export const useTodoStore = defineStore('todos', {
     state: () => ({
-        todos: [] as Todo[]
+        todos: [] as Todo[],
+        loggedInUser: false
     }),
     actions: {
         async getTodos() {
             const { apiBaseUrl } = useRuntimeConfig().public;
-            const apiFetch = new ApiFetch<Todo[]>('/all?userId=2', {
-                baseUrl: apiBaseUrl,
-                headers: {}
-            });
+            const { isSignedIn, user } = useAuth();
 
-            await apiFetch.send().then((data) => {
-                console.log(data)
-                this.todos = data.data || [];
-            }).catch(err => {
+            if (isSignedIn.value) {
+                const apiFetch = new ApiFetch<Todo[]>(`todo/all?userId=${user.value.userClaims.id}`, {
+                    baseUrl: apiBaseUrl,
+                    headers: {
+                        'Authorization': 'bearer ' + user.value.accessToken
+                    }
+                });
+
+                await apiFetch.send().then((data) => {
+                    this.todos = data.data || [];
+                }).catch(err => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        html: `<p>Something went wrong!</p> <br/> <strong>We got [${err.message}] issue.</strong>`,
+                        footer: '<a href="">Report the issue?</a>'
+                    })
+                });
+            } else {
+
                 Swal.fire({
                     icon: 'error',
-                    title: 'Oops...',
-                    html: `<p>Something went wrong!</p> <br/> <strong>We got [${err.message}] issue.</strong>`,
-                    footer: '<a href="">Report the issue?</a>'
+                    title: 'Access Denied !',
+                    confirmButtonText: 'Login'
+                }).then((result) => {
+                    navigateTo('/login', { replace: true })
                 })
-            });
+            }
 
         },
         async postLogin(username: string, password: string) {
@@ -44,18 +59,32 @@ export const useTodoStore = defineStore('todos', {
                 body: form
             });
 
-            await apiFetch.post().then(data => {
+            await apiFetch.post().then(async (data) => {
                 localStorage.setItem(userAccessTokenKey, JSON.stringify(data.data));
-                const router = useRouter();
-                router.push('/')
+                await navigateTo('/')
             }).catch(err => {
+                const { response } = err;
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    html: `<p>Something went wrong!</p> <br/> <strong class="text-gray-500">We got [${err.message}] issue.</strong>`,
+                    html: `<p>Something went wrong!</p> <br/> <strong class="text-gray-500">We got [${response.data}] issue.</strong>`,
                     footer: '<a href="#">Report the issue?</a>'
                 })
             });
+        },
+        async addTodo(items: TodoItem) {
+            const { userAccessTokenKey, apiBaseUrl } = useRuntimeConfig().public;
+            const apiFetch = new ApiFetch<any>('/ToDo/AddTodoList', {
+                baseUrl: apiBaseUrl,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(items)
+            });
+
+            await apiFetch.post().then((data)=>{
+                console.log(data)
+            })
         }
     }
 })

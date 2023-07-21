@@ -23,7 +23,35 @@ export interface AccessToken {
     tokenType: string
 }
 
-export interface AuthModel = {
+export interface AuthModel {
     isAuthenticated: Boolean,
     data: AccessToken
 }
+
+export interface RegisterModel {
+    id: number,
+    fullName: string,
+    email: string
+}
+
+enum Tags {
+    None = 0,
+    Bussines = 1,
+    Favorite = 2,
+    Life = 3,
+    Entertainment = 4
+}
+
+export interface TodoItem {
+    title: string,
+    tag: string,
+    todoItemRequests: TodoItemList[]
+}
+
+type TodoItemList = {
+    title: string,
+    note: string,
+    reminder: string,
+    priorityLevel: number
+}
+
